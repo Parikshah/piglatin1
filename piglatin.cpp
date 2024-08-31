@@ -57,14 +57,9 @@ int main(int argc, char **argv) {
     }
 
     string word;
-    bool firstWord = true;
 
     while (inStream >> word) {
-        if (!firstWord) {
-            outStream << '\n'; // Add newline between words
-        }
-        firstWord = false;
-        outStream << piglatin(word);
+        outStream << piglatin(word) << '\n'; // Write each word on a new line
     }
 
     inStream.close();
