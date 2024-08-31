@@ -1,3 +1,5 @@
+// Pari K. Shah
+
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
@@ -50,22 +52,18 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    ofstream outStream("piglatin_output.txt");
-    if (!outStream) {
-        cout << "Failed to open output file\n";
-        exit(1);
-    }
-
     string word;
+    bool firstWord = true;
 
     while (inStream >> word) {
-        outStream << piglatin(word) << '\n'; // Write each word on a new line
+        if (!firstWord) {
+            cout << '\n'; // Add newline between words
+        }
+        firstWord = false;
+        cout << piglatin(word);
     }
 
     inStream.close();
-    outStream.close();
-
-    cout << "Pig Latin words have been written to piglatin_output.txt\n";
 
     return 0;
 }
