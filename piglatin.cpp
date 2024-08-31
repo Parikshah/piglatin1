@@ -1,64 +1,60 @@
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <string>
-#include <cctype>
-
 using namespace std;
 
 // Function to convert a word to Pig Latin
 string piglatin(string s) {
-    string vowels = "aeiouAEIOU";
-    size_t first_vowel_pos = s.find_first_of(vowels);
+    // Convert to lowercase for uniform processing
+    for (char &c : s) {
+        c = tolower(c);
+    }
 
-    // If the first letter is a vowel
-    if (first_vowel_pos == 0) {
-        return s + "way";
+    // Check if the first letter is a vowel
+    if (s.empty()) return s; // Handle empty string
+
+    char firstChar = s[0];
+    string result;
+
+    if (firstChar == 'a' || firstChar == 'e' || firstChar == 'i' || firstChar == 'o' || firstChar == 'u') {
+        result = s + "way";
+    } else {
+        // Find the first vowel
+        size_t pos = s.find_first_of("aeiou");
+        if (pos != string::npos) {
+            result = s.substr(pos) + s.substr(0, pos) + "ay";
+        } else {
+            // If no vowel is found, just add "ay" (though this case is rare)
+            result = s + "ay";
+        }
     }
-    // If the word starts with a consonant or consonant cluster
-    else if (first_vowel_pos != string::npos) {
-        string prefix = s.substr(0, first_vowel_pos);
-        string stem = s.substr(first_vowel_pos);
-        return stem + prefix + "ay";
-    }
-    // In case there are no vowels (not common in English, but just in case)
-    else {
-        return s + "ay";
-    }
+
+    return result;
 }
 
-int main(int argc, char **argv) {
-    ifstream inStream;
-    ofstream outStream;
-    string s;
+int main() {
+    ifstream inFile("input.txt");
+    ofstream outFile("piglatin_output.txt");
+    string word;
 
-    if (argc < 2) {
-        cout << "Please specify filename on command line\n";
+    if (!inFile.is_open()) {
+        cerr << "Error opening input file" << endl;
         return 1;
     }
 
-    // Try to open file to read
-    inStream.open(argv[1]);
-
-    if (inStream.fail()) {
-        cout << "Failed to open file\n";
+    if (!outFile.is_open()) {
+        cerr << "Error opening output file" << endl;
         return 1;
     }
 
-    // Prepare to write to output file
-    outStream.open("piglatin_output.txt");
+    outFile << "Pig Latin words have been written to piglatin_output.txt\n";
 
-    // Read input words one by one, convert to Pig Latin, and write to output
-    while (inStream >> s) {
-        string piglatin_word = piglatin(s);
-
-        // Write the Pig Latin word to the output file
-        outStream << piglatin_word << " ";
+    while (inFile >> word) {
+        outFile << piglatin(word) << endl;
     }
 
-    inStream.close();
-    outStream.close();
-
-    cout << "Pig Latin words have been written to piglatin_output.txt\n";
+    inFile.close();
+    outFile.close();
 
     return 0;
 }
