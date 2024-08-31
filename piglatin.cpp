@@ -1,69 +1,48 @@
-//Pari K. Shah
+// Pari K. Shah 
 
-#include <cstdlib>
 #include <iostream>
-#include <fstream>
 #include <string>
 #include <cctype>
 
-using namespace std;
-
 // Function to convert a word to Pig Latin
-string piglatin(const string& s) {
-    string word = s;
-    // Convert to lowercase for consistency
-    for (char& c : word) {
-        c = tolower(c);
+std::string piglatin(const std::string& s) {
+    std::string vowels = "aeiouAEIOU";
+    std::string word = s;
+    std::string result;
+
+    if (word.empty()) return result;
+
+    // Convert to lowercase for processing
+    std::string lower_word = word;
+    for (char &c : lower_word) c = std::tolower(c);
+
+    // Check if the first letter is a vowel
+    if (vowels.find(lower_word[0]) != std::string::npos) {
+        result = lower_word + "way";
+    } else {
+        // Find the first vowel in the word
+        size_t first_vowel_pos = lower_word.find_first_of(vowels);
+        if (first_vowel_pos != std::string::npos) {
+            result = lower_word.substr(first_vowel_pos) + lower_word.substr(0, first_vowel_pos) + "ay";
+        } else {
+            result = lower_word + "ay";
+        }
     }
 
-    // Check if the word starts with a vowel
-    if (word.empty()) return word; // Handle empty string
-
-    char firstChar = word[0];
-    if (firstChar == 'a' || firstChar == 'e' || firstChar == 'i' || firstChar == 'o' || firstChar == 'u') {
-        return word + "way";
+    // Convert result back to original case
+    for (size_t i = 0; i < result.size(); ++i) {
+        if (i == 0 || lower_word[i] != lower_word[i-1]) {
+            result[i] = std::toupper(result[i]);
+        }
     }
 
-    // Handle consonants
-    size_t firstVowelPos = 0;
-    while (firstVowelPos < word.size() && (word[firstVowelPos] != 'a' && word[firstVowelPos] != 'e' &&
-                                           word[firstVowelPos] != 'i' && word[firstVowelPos] != 'o' &&
-                                           word[firstVowelPos] != 'u')) {
-        ++firstVowelPos;
-    }
-
-    if (firstVowelPos == word.size()) {
-        // No vowels found, treat entire word as consonant cluster
-        return word + "ay";
-    }
-
-    return word.substr(firstVowelPos) + word.substr(0, firstVowelPos) + "ay";
+    return result;
 }
 
-int main(int argc, char **argv) {
-    if (argc < 2) {
-        cout << "Please specify filename on command line\n";
-        exit(1);
+int main() {
+    std::string word;
+    while (std::cin >> word) {
+        std::cout << piglatin(word) << std::endl;
     }
-
-    ifstream inStream(argv[1]);
-    if (!inStream) {
-        cout << "Failed to open file\n";
-        exit(1);
-    }
-
-    string word;
-    bool firstWord = true;
-
-    while (inStream >> word) {
-        if (!firstWord) {
-            cout << '\n'; // Add newline between words
-        }
-        firstWord = false;
-        cout << piglatin(word);
-    }
-
-    inStream.close();
-
     return 0;
 }
