@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <cctype>
+#include <fstream>
 
 using namespace std;
 
@@ -33,10 +34,23 @@ string piglatin(const string& s) {
     return result;
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+    if (argc != 2) {
+        cerr << "Usage: " << argv[0] << " input.txt" << endl;
+        return 1;
+    }
+
+    ifstream file(argv[1]);
+    if (!file) {
+        cerr << "Error opening file: " << argv[1] << endl;
+        return 1;
+    }
+
     string word;
-    while (cin >> word) {
+    while (file >> word) {
         cout << piglatin(word) << endl;
     }
+
+    file.close();
     return 0;
 }
