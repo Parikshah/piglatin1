@@ -10,7 +10,7 @@ using namespace std;
 string piglatin(const string& s) {
     if (s.empty()) return "";
 
-    string vowels = "aeiouAEIOU";
+    string vowels = "aeiou";
     string lower_word = s;
     for (char &c : lower_word) c = tolower(c);
 
@@ -29,6 +29,8 @@ string piglatin(const string& s) {
     // Capitalize the first letter of the result if the input was capitalized
     if (isupper(s[0])) {
         result[0] = toupper(result[0]);
+    } else {
+        result[0] = tolower(result[0]);
     }
 
     return result;
@@ -54,3 +56,4 @@ int main(int argc, char* argv[]) {
     file.close();
     return 0;
 }
+
